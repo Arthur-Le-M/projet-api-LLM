@@ -1,5 +1,6 @@
 from typing import Union
 from fastapi import FastAPI, File, UploadFile, Query, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 import whisper
 from openai import OpenAI
 
@@ -7,6 +8,17 @@ from openai import OpenAI
 app = FastAPI()
 model = whisper.load_model("base")
 client = OpenAI(base_url="http://localhost:1234/v1", api_key="lm-studio")
+
+origins = ["http://127.0.0.1:5500", "https://127.0.0.1:5500"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 #Request
 
 #Transcribe with Whisper
