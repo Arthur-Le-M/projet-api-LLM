@@ -15,7 +15,7 @@ uploadButton.addEventListener('change', async (event) => {
     if (file) {
         fileNameDisplay.textContent = file.name;
         formData = new FormData(); // Reset formData
-        formData.append('audio', file); // Append the selected file
+        formData.append('file', file); // Append the selected file
     }
 });
 
@@ -38,7 +38,7 @@ recordButton.addEventListener('click', async () => {
         mediaRecorder.onstop = async () => {
             const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
             formData = new FormData(); // Reset formData
-            formData.append('audio', audioBlob); // Append the recorded audio blob
+            formData.append('file', audioBlob); // Append the recorded audio blob
         };
 
         mediaRecorder.start();
@@ -51,7 +51,7 @@ recordButton.addEventListener('click', async () => {
 });
 
 transcribeButton.addEventListener('click', async () => {
-    if (formData.has('audio')) {
+    if (formData.has('file')) {
         statusText.innerText = "Transcription en cours...";
         
         try {

@@ -3,13 +3,14 @@ from fastapi import FastAPI, File, UploadFile, Query, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 import whisper
 from openai import OpenAI
+import os
 
 #Init
 app = FastAPI()
 model = whisper.load_model("base")
 client = OpenAI(base_url="http://localhost:1234/v1", api_key="lm-studio")
 
-origins = ["http://127.0.0.1:5500", "https://127.0.0.1:5500"]
+origins = ["*"]
 
 app.add_middleware(
     CORSMiddleware,
@@ -32,6 +33,10 @@ async def transcribe_audio(file: UploadFile = File(...)) -> Union[str, dict]:
             f.write(await file.read())
         
         transcription = model.transcribe(file.filename)
+        
+        # Remove the audio file after transcription
+        f.close()
+        os.remove(file.filename)
         
         return {"transcription": transcription["text"]}
     else:
