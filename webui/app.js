@@ -1,3 +1,34 @@
+document.addEventListener('DOMContentLoaded', (event) => {
+    openTab('transcriptionTab');
+});
+
+function openTab(tabId) {
+    const tabContents = document.querySelectorAll('.tab-content');
+    const tabButtons = document.querySelectorAll('.tab-button');
+    
+    // Hide all tab contents
+    tabContents.forEach((tabContent) => {
+        tabContent.classList.remove('active');
+        tabContent.style.display = 'none';
+    });
+    
+    // Remove active class from all tab buttons
+    tabButtons.forEach((tabButton) => {
+        tabButton.classList.remove('active');
+        tabButton.classList.add('inactive');
+    });
+    
+    // Show the selected tab content
+    const activeTab = document.getElementById(tabId);
+    activeTab.classList.add('active');
+    activeTab.style.display = 'block';
+    
+    // Add active class to the corresponding tab button
+    const activeButton = document.querySelector(`.tab-button[onclick="openTab('${tabId}')"]`);
+    activeButton.classList.add('active');
+    activeButton.classList.remove('inactive');
+}
+
 const uploadButton = document.getElementById('uploadButton');
 const fileNameDisplay = document.getElementById('fileName');
 const recordButton = document.getElementById('recordButton');
@@ -74,5 +105,41 @@ transcribeButton.addEventListener('click', async () => {
         }
     } else {
         statusText.innerText = "Aucun fichier audio sélectionné ou enregistré.";
+    }
+});
+
+const speakButton = document.getElementById('speakButton');
+const contextInput = document.getElementById('context');
+const promptInput = document.getElementById('prompt');
+const llmResponseDisplay = document.getElementById('llmResponse');
+
+speakButton.addEventListener('click', async () => {
+    const context = contextInput.value;
+    const prompt = promptInput.value;
+
+    if (context && prompt) {
+        llmResponseDisplay.innerText = "Processing...";
+        
+        try {
+            const url = new URL('http://localhost:8000/speak/');
+            url.searchParams.append('context', context);
+            url.searchParams.append('prompt', prompt);
+
+            const response = await fetch(url, {
+                method: 'GET',
+            });
+
+            if (!response.ok) {
+                throw new Error(`Erreur du serveur: ${response.status} ${response.statusText}`);
+            }
+
+            const result = await response.json();
+            llmResponseDisplay.textContent = result.response;
+        } catch (error) {
+            console.error('Erreur lors de la requête LLM:', error);
+            llmResponseDisplay.innerText = "Erreur lors de la requête LLM. Veuillez réessayer.";
+        }
+    } else {
+        llmResponseDisplay.innerText = "Veuillez remplir le contexte et le prompt.";
     }
 });

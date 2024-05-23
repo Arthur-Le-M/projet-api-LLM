@@ -8,15 +8,27 @@
 </head>
 <body>
     <div class="container">
-        <h1>Audio Transcription</h1>
-        <button id="recordButton">Record</button>
-        <h3>OR</h3>
-        <label for="uploadButton" class="custom-file-upload">Choisir un fichier</label>
-        <input type="file" id="uploadButton" accept="audio/*">
-        <span id="fileName">Aucun fichier choisi</span>
-        <p id="status">Click on record button to record your voice or upload your audio file</p>
-        <button id="transcribeButton">Transcribe</button>
-        <textarea id="transcription" rows="10" cols="50" readonly placeholder="La transcription apparaîtra ici..."></textarea>
+        <h1>Test API</h1>
+        <div class="tabs">
+            <button class="tab-button" onclick="openTab('transcriptionTab')">Transcription</button>
+            <button class="tab-button" onclick="openTab('speakTab')">Speak</button>
+        </div>
+        <div id="transcriptionTab" class="tab-content">
+            <button id="recordButton">Record</button>
+            <h3>OR</h3>
+            <label for="uploadButton" class="custom-file-upload">Choisir un fichier</label>
+            <input type="file" id="uploadButton" accept="audio/*">
+            <span id="fileName">Aucun fichier choisi</span>
+            <p id="status">Click on record button to record your voice or upload your audio file</p>
+            <button id="transcribeButton">Transcribe</button>
+            <textarea id="transcription" rows="10" cols="50" readonly placeholder="La transcription apparaîtra ici..."></textarea>
+        </div>
+        <div id="speakTab" class="tab-content" style="display:none;">
+            <textarea id="context" rows="4" cols="50" placeholder="Entrez le contexte ici..."></textarea>
+            <textarea id="prompt" rows="4" cols="50" placeholder="Entrez le prompt ici..."></textarea>
+            <button id="speakButton">Speak</button>
+            <p id="llmResponse">Réponse du LLM : </p>
+        </div>
     </div>
     <script src="app.js"></script>
 </body>
