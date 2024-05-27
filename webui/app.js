@@ -143,3 +143,36 @@ speakButton.addEventListener('click', async () => {
         llmResponseDisplay.innerText = "Veuillez remplir le contexte et le prompt.";
     }
 });
+
+const textToSpeechButton = document.getElementById('textToSpeechButton');
+const textToSpeechInput = document.getElementById('textToSpeech');
+const audioElement = document.getElementById('audio');
+
+textToSpeechButton.addEventListener('click', async () => {
+    const text = textToSpeechInput.value;
+
+    if (text) {
+        try {
+            const url = new URL('http://localhost:8000/tts/');
+            url.searchParams.append('text', text);
+
+            const response = await fetch(url, {
+                method: 'GET',
+            });
+
+            if (!response.ok) {
+                throw new Error(`Erreur du serveur: ${response.status} ${response.statusText}`);
+            }
+
+            const audioBlob = await response.blob();
+            const audioUrl = URL.createObjectURL(audioBlob);
+            audioElement.src = audioUrl;
+            audioElement.style.display = 'block';
+        } catch (error) {
+            console.error('Erreur lors de la synthèse vocale:', error);
+            alert("Erreur lors de la synthèse vocale. Veuillez réessayer.");
+        }
+    } else {
+        alert("Veuillez entrer du texte pour la synthèse vocale.");
+    }
+});

@@ -12,6 +12,7 @@
         <div class="tabs">
             <button class="tab-button" onclick="openTab('transcriptionTab')">Transcription</button>
             <button class="tab-button" onclick="openTab('speakTab')">Speak</button>
+            <button class="tab-button" onclick="openTab('textToSpeechTab')">Text to Speech</button>
         </div>
         <div id="transcriptionTab" class="tab-content">
             <button id="recordButton">Record</button>
@@ -28,6 +29,11 @@
             <textarea id="prompt" rows="4" cols="50" placeholder="Entrez le prompt ici..."></textarea>
             <button id="speakButton">Speak</button>
             <p id="llmResponse">Réponse du LLM : </p>
+        </div>
+        <div id="textToSpeechTab" class="tab-content" style="display:none;">
+            <textarea id="textToSpeech" rows="4" cols="50" placeholder="Entrez le texte ici..."></textarea>
+            <button id="textToSpeechButton">Text to Speech</button>
+            <audio id="audio" controls></audio>
         </div>
     </div>
     <script src="app.js"></script>
