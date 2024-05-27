@@ -4,12 +4,19 @@ from fastapi.middleware.cors import CORSMiddleware
 import whisper
 from openai import OpenAI
 import os
+from TTS.api import TTS
+from fastapi.responses import FileResponse
 
 #Init
 app = FastAPI()
+
 model = whisper.load_model("base")
+
 client = OpenAI(base_url="http://localhost:1234/v1", api_key="lm-studio")
 
+tts = TTS("tts_models/multilingual/multi-dataset/xtts_v2", gpu=True)
+
+#CORS
 origins = ["*"]
 
 app.add_middleware(
@@ -24,28 +31,34 @@ app.add_middleware(
 
 #Transcribe with Whisper
 @app.post("/transcribe/")
-async def transcribe_audio(file: UploadFile = File(...)) -> Union[str, dict]:
+async def transcribe_audio_request(file: UploadFile = File(...)) -> Union[str, dict]:
     """
     Transcribes the audio file uploaded by the user.
     """
-    if file.content_type.startswith("audio/"):
-        with open(file.filename, "wb") as f:
-            f.write(await file.read())
-        
-        transcription = model.transcribe(file.filename)
-        
-        # Remove the audio file after transcription
-        f.close()
-        os.remove(file.filename)
-        
-        return {"transcription": transcription["text"]}
-    else:
-        return "Invalid file format. Please upload an audio file."
+    transcription = await transcribe_audio(file)
+    return {"transcription": transcription}
     
 
 #Speak with LLM
 @app.get("/speak/")
-async def speak_with_llm(context: str = Query(...), prompt: str = Query(...)) -> Union[str, dict]:
+async def speak_with_llm_request(context: str = Query(...), prompt: str = Query(...)) -> Union[str, dict]:
+    """
+    Speaks with OpenAI Language Model (LLM).
+    """
+    response = await speak_with_llm(context, prompt)
+    return {"response": response}
+
+#Make TTS
+@app.get("/tts/")
+async def make_tts_request(text: str = Query(...)) -> Union[str, dict]:
+    """
+    Converts the text to speech.
+    """
+    filePath = await make_tts(text)
+    return FileResponse(filePath, media_type="audio/wav", filename="output.wav")
+
+#Fonctions
+async def speak_with_llm(context: str, prompt: str):
     """
     Speaks with OpenAI Language Model (LLM).
     """
@@ -60,7 +73,34 @@ async def speak_with_llm(context: str = Query(...), prompt: str = Query(...)) ->
             temperature=0.5,
         )
         # Extract the response from LLM
-        print(completion.choices[0].message.content)
-        return {"response": completion.choices[0].message.content}
+        return completion.choices[0].message.content
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
+    
+async def transcribe_audio(file):
+    """
+    Transcribes the audio file uploaded by the user.
+    """
+    try:
+        if file.content_type.startswith("audio/"):
+            with open(file.filename, "wb") as f:
+                f.write(await file.read())
+            
+            transcription = model.transcribe(file.filename)
+            
+            # Remove the audio file after transcription
+            f.close()
+            os.remove(file.filename)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
+
+async def make_tts(text):
+    """
+    Converts the text to speech.
+    """
+    try:
+        filePath = "output.wav"
+        tts.tts_to_file(text=text, file_path=filePath, speaker="Ana Florence", language="fr") 
+        return filePath
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")

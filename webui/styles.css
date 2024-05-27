@@ -145,3 +145,9 @@ textarea:focus {
     padding: 10px;
     border-radius: 5px;
 }
+
+#audio {
+    margin-top: 20px;
+    width: 90%;
+    border-radius: 5px;
+}
