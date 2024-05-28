@@ -57,6 +57,27 @@ async def make_tts_request(text: str = Query(...)) -> Union[str, dict]:
     filePath = await make_tts(text)
     return FileResponse(filePath, media_type="audio/wav", filename="output.wav")
 
+
+#Conversation
+@app.post("/conversation/")
+async def conversation(file: UploadFile = File(...)) -> Union[str, dict]:
+    """
+    Transcribes the audio file uploaded by the user and speaks with OpenAI Language Model (LLM).
+    """
+    #Print filename
+    print(file.content_type)
+    print("Transcribing audio...")
+    transcription = await transcribe_audio(file)
+    print(transcription)
+    print("Speaking with LLM...")
+    response = await speak_with_llm("Tu es un agent IA là pour aider", transcription)
+    print(response)
+    print("Making TTS...")
+    filePath = await make_tts(response)
+    return FileResponse(filePath, media_type="audio/wav", filename="output.wav")
+    
+
+
 #Fonctions
 async def speak_with_llm(context: str, prompt: str):
     """
@@ -91,6 +112,7 @@ async def transcribe_audio(file):
             # Remove the audio file after transcription
             f.close()
             os.remove(file.filename)
+        return transcription["text"]
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
 
