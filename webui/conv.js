@@ -28,6 +28,7 @@ navigator.mediaDevices.getUserMedia({ audio: true })
                     const responseBlob = await response.blob();
                     const responseUrl = URL.createObjectURL(responseBlob);
                     audioRecords.src = responseUrl;
+                    audioRecords.play();
                 } else {
                     console.error('Error from server:', response.statusText);
                 }

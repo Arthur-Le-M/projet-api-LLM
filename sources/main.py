@@ -70,7 +70,7 @@ async def conversation(file: UploadFile = File(...)) -> Union[str, dict]:
     transcription = await transcribe_audio(file)
     print(transcription)
     print("Speaking with LLM...")
-    response = await speak_with_llm("Tu es un agent IA là pour aider", transcription)
+    response = await speak_with_llm("Tu es un agent IA là pour aider, tu ne fais que des réponse courte", transcription)
     print(response)
     print("Making TTS...")
     filePath = await make_tts(response)
