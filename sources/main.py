@@ -1,11 +1,12 @@
 from typing import Union
-from fastapi import FastAPI, File, UploadFile, Query, HTTPException
+from fastapi import FastAPI, File, UploadFile, Query, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
 import whisper
 from openai import OpenAI
 import os
 from TTS.api import TTS
 from fastapi.responses import FileResponse
+from auth import auth_router, get_current_user, UserInDB
 
 #Init
 app = FastAPI()
@@ -27,7 +28,17 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Inclure le routeur d'authentification depuis auth.py
+app.include_router(auth_router)
+
 #Request
+
+@app.get("/getUser")
+async def get_user_route(current_user: UserInDB = Depends(get_current_user)):
+    """
+    Route pour tester l'authentification en récupérant l'utilisateur authentifié.
+    """
+    return {"user": current_user}
 
 #Transcribe with Whisper
 @app.post("/transcribe/")
