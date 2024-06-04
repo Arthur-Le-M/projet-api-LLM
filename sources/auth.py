@@ -51,26 +51,15 @@ def get_current_user(token: str = Depends(oauth2_scheme)):
         headers={"WWW-Authenticate": "Bearer"},
     )
     try:
-        logger.debug(f"Token reçu: {token}")
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        logger.debug(f"Payload décodé: {payload}")
         username: str = payload.get("sub")
         if username is None:
             raise credentials_exception
     except JWTError as e:
-        logger.error(f"Erreur JWT: {e}")
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Erreur 2",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
+        raise credentials_exception
     user = get_user(username)
     if user is None:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Erreur 3",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
+        raise credentials_exception
     return user
 
 # Récupération d'un utilisateur
@@ -93,14 +82,14 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Username is incorrect",
+            detail="Password or username is incorrect",
             headers={"WWW-Authenticate": "Bearer"},
         )
     hashed_password = user.hashed_password
     if not verify_password(form_data.password, hashed_password):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Password is incorrect",
+            detail="Password or username is incorrect",
             headers={"WWW-Authenticate": "Bearer"},
         )
 

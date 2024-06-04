@@ -42,7 +42,7 @@ async def get_user_route(current_user: UserInDB = Depends(get_current_user)):
 
 #Transcribe with Whisper
 @app.post("/transcribe/")
-async def transcribe_audio_request(file: UploadFile = File(...)) -> Union[str, dict]:
+async def transcribe_audio_request(file: UploadFile = File(...), current_user: UserInDB = Depends(get_current_user)) -> Union[str, dict]:
     """
     Transcribes the audio file uploaded by the user.
     """
@@ -52,7 +52,7 @@ async def transcribe_audio_request(file: UploadFile = File(...)) -> Union[str, d
 
 #Speak with LLM
 @app.get("/speak/")
-async def speak_with_llm_request(context: str = Query(...), prompt: str = Query(...)) -> Union[str, dict]:
+async def speak_with_llm_request(context: str = Query(...), prompt: str = Query(...), current_user: UserInDB = Depends(get_current_user)) -> Union[str, dict]:
     """
     Speaks with OpenAI Language Model (LLM).
     """
@@ -61,7 +61,7 @@ async def speak_with_llm_request(context: str = Query(...), prompt: str = Query(
 
 #Make TTS
 @app.get("/tts/")
-async def make_tts_request(text: str = Query(...)) -> Union[str, dict]:
+async def make_tts_request(text: str = Query(...), current_user: UserInDB = Depends(get_current_user)) -> Union[str, dict]:
     """
     Converts the text to speech.
     """
@@ -71,7 +71,7 @@ async def make_tts_request(text: str = Query(...)) -> Union[str, dict]:
 
 #Conversation
 @app.post("/conversation/")
-async def conversation(file: UploadFile = File(...)) -> Union[str, dict]:
+async def conversation(file: UploadFile = File(...), current_user: UserInDB = Depends(get_current_user)) -> Union[str, dict]:
     """
     Transcribes the audio file uploaded by the user and speaks with OpenAI Language Model (LLM).
     """

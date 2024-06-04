@@ -17,5 +17,10 @@
         </section>
     </main>
 </body>
+<script>
+    if (!localStorage.getItem('token')) {
+        window.location.href = "login.html";
+    }
+</script>
 <script src="conv.js"></script>
 </html>

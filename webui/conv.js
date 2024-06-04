@@ -4,6 +4,8 @@ let isRecording = false;
 let audioChunks = [];
 let mediaRecorder;
 
+const token = localStorage.getItem('token');
+
 navigator.mediaDevices.getUserMedia({ audio: true })
     .then(stream => {
         mediaRecorder = new MediaRecorder(stream);
@@ -17,9 +19,13 @@ navigator.mediaDevices.getUserMedia({ audio: true })
             const formData = new FormData();
             formData.append('file', audioBlob, 'recording.wav');
             micButton.src = 'img/loading.svg';
+
             try {
                 const response = await fetch('http://localhost:8000/conversation/', {
                     method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    },
                     body: formData
                 });
 
