@@ -20,5 +20,5 @@ RUN wget https://releases.lmstudio.ai/linux/x86/0.2.25/beta/LM_Studio-0.2.25.App
     chmod u+x LM_Studio-0.2.25.AppImage
 
 COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
+#RUN chmod +x /entrypoint.sh
 

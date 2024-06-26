@@ -2,6 +2,8 @@ document.addEventListener('DOMContentLoaded', (event) => {
     openTab('transcriptionTab');
 });
 
+const token = localStorage.getItem('token');
+
 function openTab(tabId) {
     const tabContents = document.querySelectorAll('.tab-content');
     const tabButtons = document.querySelectorAll('.tab-button');
@@ -89,6 +91,9 @@ transcribeButton.addEventListener('click', async () => {
             // Envoyer l'audio au serveur pour transcription
             const response = await fetch('http://localhost:8000/transcribe/', { 
                 method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
                 body: formData
             });
 
@@ -127,6 +132,9 @@ speakButton.addEventListener('click', async () => {
 
             const response = await fetch(url, {
                 method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
             });
 
             if (!response.ok) {
@@ -158,6 +166,9 @@ textToSpeechButton.addEventListener('click', async () => {
 
             const response = await fetch(url, {
                 method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
             });
 
             if (!response.ok) {

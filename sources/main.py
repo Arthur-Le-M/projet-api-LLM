@@ -7,6 +7,7 @@ import os
 from TTS.api import TTS
 from fastapi.responses import FileResponse
 from auth import auth_router, get_current_user, UserInDB
+import requests
 
 #Init
 app = FastAPI()
@@ -14,6 +15,12 @@ app = FastAPI()
 model = whisper.load_model("base")
 
 client = OpenAI(base_url="http://localhost:1234/v1", api_key="lm-studio")
+
+url = "http://127.0.0.1:5000/v1/chat/completions"
+
+headers = {
+    "Content-Type": "application/json"
+}
 
 tts = TTS("tts_models/multilingual/multi-dataset/xtts_v2", gpu=True)
 
@@ -95,17 +102,18 @@ async def speak_with_llm(context: str, prompt: str):
     Speaks with OpenAI Language Model (LLM).
     """
     try:
-        # Create a chat completion with OpenAI LLM
-        completion = client.chat.completions.create(
-            model="lmstudio-community/Meta-Llama-3-8B-Instruct-GGUF",
-            messages=[
-                {"role": "system", "content": context},
-                {"role": "user", "content": prompt}
-            ],
-            temperature=0.5,
-        )
-        # Extract the response from LLM
-        return completion.choices[0].message.content
+        history = []
+        user_message = prompt
+        history.append({"role": "assistant", "content": context})
+        history.append({"role": "user", "content": user_message})
+        data = {
+        "mode": "chat",
+        "messages": history
+        }
+        response = requests.post(url, headers=headers, json=data, verify=False)
+        assistant_message = response.json()['choices'][0]['message']['content']
+        history.append({"role": "assistant", "content": assistant_message})
+        return assistant_message
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
     

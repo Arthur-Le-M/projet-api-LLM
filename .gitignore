@@ -29,3 +29,6 @@ dist/
 # Dependency directories
 lib/
 lib64/
+
+#Custom
+*.wav
