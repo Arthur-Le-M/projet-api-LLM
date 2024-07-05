@@ -29,6 +29,7 @@ cymem==2.0.8
 Cython==3.0.10
 dateparser==1.1.8
 decorator==5.1.1
+diskcache==5.6.3
 distro==1.9.0
 dnspython==2.6.1
 docopt==0.6.2
@@ -45,6 +46,7 @@ fonttools==4.51.0
 frozenlist==1.4.1
 fsspec==2024.5.0
 g2pkk==0.1.2
+greenlet==3.0.3
 grpcio==1.64.0
 gruut==2.2.3
 gruut-ipa==0.13.0
@@ -70,8 +72,13 @@ Jinja2==3.1.4
 joblib==1.4.2
 jose==1.0.0
 jsonlines==1.2.0
+jsonpatch==1.33
+jsonpointer==3.0.0
 kiwisolver==1.4.5
+langchain-core==0.2.9
+langchain-text-splitters==0.2.1
 langcodes==3.4.0
+langsmith==0.1.82
 language_data==1.2.0
 lazy_loader==0.4
 librosa==0.10.0
@@ -137,12 +144,14 @@ soxr==0.3.7
 spacy==3.7.4
 spacy-legacy==3.0.12
 spacy-loggers==1.0.5
+SQLAlchemy==2.0.31
 srsly==2.4.8
 starlette==0.37.2
 SudachiDict-core==20240409
 SudachiPy==0.6.8
 sympy==1.12
 tbb==2021.12.0
+tenacity==8.4.2
 tensorboard==2.16.2
 tensorboard-data-server==0.7.2
 thinc==8.2.3
