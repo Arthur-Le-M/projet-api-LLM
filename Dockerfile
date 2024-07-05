@@ -12,6 +12,8 @@ RUN wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86
 
 ENV PATH="/opt/conda/bin:$PATH"
 
+RUN /opt/conda/bin/conda install -y pip setuptools wheel
+
 #XTTS & STT
 
 RUN conda create -n xtts python=3.9 -y \
@@ -30,7 +32,7 @@ RUN git clone https://github.com/Arthur-Le-M/projet-api-LLM.git
     
 WORKDIR /projet-api-LLM
     
-RUN pip install -r requirements.txt
+# RUN pip install -r requirements.txt
     
 # fastapi run sources/main.py to start the API
 
